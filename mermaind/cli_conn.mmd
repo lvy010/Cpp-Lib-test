@@ -1,0 +1,39 @@
+sequenceDiagram
+    title TCP客户端连接建立流程 (connect -> newConnection)
+
+    participant ClientThread as 客户端线程
+    participant EventLoop as 事件循环
+    participant TcpClient as TCP客户端
+    participant Connector as 连接器
+    participant OSKernel as 系统内核
+    participant Poller as 轮询器
+    participant TcpConnection as TCP连接
+
+    ClientThread->>TcpClient: connect()
+    TcpClient->>EventLoop: runInLoop(connector_->startInLoop)
+    Note over EventLoop: 将 startInLoop 加入待处理队列
+
+    EventLoop->>Connector: startInLoop()
+    Connector->>OSKernel: 创建非阻塞套接字
+    OSKernel-->>Connector: 返回 sockfd
+    Connector->>OSKernel: connect(sockfd, serverAddr)
+    OSKernel-->>Connector: 返回 -1（EINPROGRESS）
+    Connector->>Poller: 注册 POLLOUT/POLLERR 事件
+    Note over Poller: 开始监视套接字通道
+
+    loop 事件循环
+        Poller->>EventLoop: 报告活跃事件
+        alt 连接成功（POLLOUT）
+            EventLoop->>Connector: handleWrite()
+            Connector->>OSKernel: 获取套接字错误
+            OSKernel-->>Connector: 返回0（无错误）
+            Connector->>TcpClient: newConnection(sockfd)
+            TcpClient->>TcpConnection: 创建连接对象
+            TcpClient->>用户回调: 执行连接建立回调
+        else 连接失败（POLLERR）
+            EventLoop->>Connector: handleError()
+            Connector->>OSKernel: 获取错误详情
+            OSKernel-->>Connector: 返回错误
+            Connector->>Connector: 清理资源并重试
+        end
+    end
