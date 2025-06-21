@@ -18,7 +18,7 @@ LDFLAGS := -L$(MUDUO_INSTALL_DIR)/lib
 LDLIBS := -lmuduo_net -lmuduo_base -lpthread -lboost_system
 
 # --- Targets ---
-TARGETS := test_eventloop test_thread_eventloop test_simple_thread test_timerfd_channel
+TARGETS := test_eventloop test_thread_eventloop test_simple_thread test_timerfd_channel test_buffer_test
 SRC := test/test_eventloop.cpp
 
 .PHONY: all clean run check_muduo
@@ -46,6 +46,11 @@ test_simple_thread: test/test_simple_thread.cpp | check_muduo
 test_timerfd_channel: test/timerfd_channel.cpp | check_muduo
 	$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS) $(LDLIBS)
 
+test_buffer_test: test/buffer_test.cpp | check_muduo
+	@echo "==> 编译并链接 test_buffer_test..."
+	$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS) $(LDLIBS)
+	@echo "==> 成功构建 test_buffer_test"
+
 # 检查 muduo 库是否已构建并安装
 check_muduo:
 	@if [ ! -d "$(MUDUO_INSTALL_DIR)/lib" ] || [ ! -f "$(MUDUO_INSTALL_DIR)/lib/libmuduo_net.a" ]; then \
@@ -61,4 +66,5 @@ run: test_eventloop
 
 clean:
 	@echo "==> 清理..."
+	rm -f test_eventloop test_thread_eventloop test_simple_thread test_timerfd_channel test_buffer_test
 	rm -f test_eventloop test_thread_eventloop test_simple_thread test_timerfd_channel
