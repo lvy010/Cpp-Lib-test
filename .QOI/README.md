@@ -102,7 +102,7 @@ ls -la qoi_simple_bench
 
 ### QOI编码性能 (5轮测试)
 
-[ret](.QOI/test/ret.png)
+![QOI基准测试结果](test/ret.png)
 
 ## 性能分析
 
