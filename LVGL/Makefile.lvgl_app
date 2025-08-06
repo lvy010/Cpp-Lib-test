@@ -1,0 +1,30 @@
+CC = gcc
+CFLAGS = -Wall -Wextra -std=c99 -I./lvgl -DLV_CONF_INCLUDE_SIMPLE -DLV_CONF_SKIP
+LIBS = -lm
+
+# 目标文件
+TARGET = lvgl_complete_app
+SOURCES = lvgl_app.c
+OBJECTS = $(SOURCES:.c=.o)
+
+# 默认目标
+all: $(TARGET)
+
+# 编译目标（简化版本，不链接 LVGL 库）
+$(TARGET): $(SOURCES)
+	$(CC) $(CFLAGS) $(SOURCES) -o $(TARGET) $(LIBS)
+
+# 清理
+clean:
+	rm -f $(OBJECTS) $(TARGET)
+
+# 运行
+run: $(TARGET)
+	./$(TARGET)
+
+# 安装依赖
+install-deps:
+	sudo apt update
+	sudo apt install -y build-essential
+
+.PHONY: all clean run install-deps 

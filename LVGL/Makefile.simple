@@ -1,0 +1,26 @@
+CC = gcc
+CFLAGS = -Wall -Wextra -std=c99
+TARGET = lvgl_style_test_simple
+SOURCES = simple_test.c
+
+# 默认目标
+all: $(TARGET)
+
+# 编译目标
+$(TARGET): $(SOURCES)
+	$(CC) $(CFLAGS) $(SOURCES) -o $(TARGET)
+
+# 清理
+clean:
+	rm -f $(TARGET)
+
+# 运行
+run: $(TARGET)
+	./$(TARGET)
+
+# 安装依赖
+install-deps:
+	sudo apt update
+	sudo apt install -y build-essential
+
+.PHONY: all clean run install-deps 
