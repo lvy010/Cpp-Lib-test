@@ -11,8 +11,8 @@ static void my_bubbling_event_cb(lv_event_t * e)
     if (code == LV_EVENT_CLICKED)
     {
         printf("事件代码: CLICKED\n");
-        printf("  原始目标: %s\n", lv_obj_get_class_name(original_target));
-        printf("  当前处理器: %s\n", lv_obj_get_class_name(current_target));
+        printf("  原始目标: %s\n", lv_obj_class_get_name(lv_obj_get_class(original_target)));
+        printf("  当前处理器: %s\n", lv_obj_class_get_name(lv_obj_get_class(current_target)));
         printf("------------------------\n");
     }
 }
